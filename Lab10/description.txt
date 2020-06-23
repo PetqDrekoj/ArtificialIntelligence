@@ -1,0 +1,72 @@
+My algorithm contains Variables, Input and Output and I tried to construct the problem in such a way that my model, controller and view are not affected. So the only things u need to change in order to make this a different problem is the values from Main, where I define my classes and the repository, where I suppose that there are 2 input variables. Other than that it is pretty general.
+
+How my app works? U write in the input.in file the values that u want to see the result for.
+In output.in u will see the result.
+
+How to change my app to work for other cases?
+
+In main I created the classes needed for the problem, the inputVariables and outputVariable
+A variable has 
+Name, min, max, resolution.
+And by looking at the graph u can insert the values for this variable
+Name, point A, point B, point C, (point D for trapezoid)
+
+So how is my algorithm working?
+Well the variables are used for fuzzification along with the rules. 
+I take the rules and I try to obtain new clauses with the 'union' or 'intersect'. In my problem I used 'union'. => I take the maximum from Variable 1 and Variable 2 ( texture and capacity)
+And that gives me an array with the result of this union (the graph resulted by the union but simplified in 1 array).
+So for each array like this I have RES values(resolution) and i just multiply the point at which the point is with its value. 
+So lets say I have this array 0 0.1 0.2 0.3 0.4 0 0 0 0 0 0=> and the min value and max value are 0 and 1 and the resolution 10 => 0*0+0.1*0.1 + 0.2*0.2 + 0.3*0.3 + 0.4*0.4 + 0.5*0 + 0.6*0 +0.7*0 + 0.8*0 + 0.9*0 + 1*0.
+
+=> THIS IS MAMDANI model. Where I create a new form so to say in the output graph and I am using the center of gravity  COA, to deffuzify.
+
+
+Let's say I have 
+Texture: 0.8
+Capacity: 5
+
+
+R1: If texture is normal and capacity high => intense
+a = 0.3 b = 0.7 c = 0.9
+u_resistant = max(0,min([x-a]/[b-a],1,[c-x]/[c-b]) = max(0,min(1.25,1,0.5)) = 0.5
+a = 3 b = 4 c = 5 d = 5
+u_high = max(0,min([x-a]/[b-a],1,[d-x]/[d-c])) = max(0,min(1,1,1)) = 1
+u_intense = min(u_resistant, u_high) = 0.5
+
+R2: if texture is resistant and capacity high => intense
+a = 0.7 b = 0.9 c = 1 d = 1
+u_resistant = max(0,min([x-a]/[b-a],1,[d-x]/[d-c]) = max(0,min(0.5,1,1)) = 0.5
+a = 3 b = 4 c = 5 d = 5
+u_high = max(0,min([x-a]/[b-a],1,[d-x]/[d-c])) = max(0,min(1,1,1)) = 1
+u_intense = min(u_resistant, u_high) = 0.5
+
+=> graph is colored at intense cycle until height 0.5... 
+Let;s take some points that make this graph -> (0.7,0), (0.8,0.5), (0.9,0.5), (1,0.5)
+COA = ( 0.7*0 + 0.8*0.5 + 0.9*0.5 + 1*0.5 ) / (0 + 0.5 + 0.5 + 0.5) = 1.35 / 1.5 = 0.9
+=> cycle at 0.9
+
+Let's say I have 
+Texture: 0.1
+Capacity: 1
+
+
+R1: If texture is very soft and capacity small => delicate
+a = 0 b = 0 c = 0.2 d = 0.4
+u_verysoft = max(0,min([x-a]/[b-a],1,[d-x]/[d-c]) = max(0,min(1,1,1.5)) = 1
+a = 0 b = 0 c = 1 d = 2
+u_small = max(0,min([x-a]/[b-a],1,[d-x]/[d-c])) = max(0,min(1,1,1)) = 1
+u_delicate = min(u_verysoft, u_small) = 1
+
+=> graph is colored at delicate cycle until height 1... 
+Let;s take some points that make this graph -> (0,1), (0.1,1), (0.2,1), (0.3,0.5), (0.4,0)
+COA = ( 0*1 + 0.1*1 + 0.2*1 + 0.3*0.5 + 0.4*0 ) / (1 + 1 + 1 + 0.5 + 0) = 0.45 / 3.5 = 0.12857
+=> cycle at 0.12857
+
+
+
+
+
+
+
+
+
